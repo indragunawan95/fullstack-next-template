@@ -10,7 +10,12 @@ export const POST = async (req: NextRequest) => {
         });
 
         return new Response(JSON.stringify({ data: todo }), { status: 201 });
-    } catch (error) {
-        return new Response(JSON.stringify({ error: error }), { status: 500 });
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+        } else {
+            // Handle cases where 'error' is not an Error object
+            return new Response(JSON.stringify({ error: 'An unexpected error occurred' }), { status: 500 });
+        }
     }
 };
